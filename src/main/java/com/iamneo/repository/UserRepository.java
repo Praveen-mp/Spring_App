@@ -9,7 +9,8 @@ import com.iamneo.model.User;
 import java.util.Optional;
 
 @Repository
-public interface StudentRepository extends JpaRepository<User, Long> {
-//      User findByEmail(String userEmail);
-//    Optional<User> findOneByEmailAndPassword(String email, String password)
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUserEmail(String userEmail);
+    public User findByUserId(Long uid);
+
 }
