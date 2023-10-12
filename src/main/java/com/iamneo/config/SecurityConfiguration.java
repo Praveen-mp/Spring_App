@@ -37,7 +37,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/login","/add","/delete/{userId}","/find/{userId}","/findAll"
-                        ,"/allFlight","/findFlight/{fid}")
+                        ,"/allFlight","/findFlight/{fid}","/fare/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
