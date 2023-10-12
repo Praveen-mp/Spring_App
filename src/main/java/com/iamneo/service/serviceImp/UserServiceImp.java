@@ -1,11 +1,16 @@
-package com.iamneo.service;
+package com.iamneo.service.serviceImp;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.iamneo.jwt.JwtUtil;
 import com.iamneo.repository.UserRepository;
 import com.iamneo.request.UserRequest;
 import com.iamneo.response.AuthResponse;
+import com.iamneo.response.UserResponse;
+import com.iamneo.role.Role;
+import com.iamneo.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -41,23 +46,27 @@ public class UserServiceImp implements UserService {
     User user = new User();
 
     @Override
-    public User saveStudent(UserDto dto) {
+    public User saveUser(UserDto dto) {
         BeanUtils.copyProperties(dto, user);
         userRepository.save(user);
         return user;
     }
 
     @Override
-    public boolean deleteStudent(Long user_id) {
+    public boolean deleteUser(Long user_id) {
         userRepository.deleteById(user_id);
         return false;
     }
 
+
+
     @Override
-    public User getStudent(Long user_id) {
-        Optional<User> findById = userRepository.findById(user_id);
-        BeanUtils.copyProperties(findById, user);
-        return user;
+    public List<UserResponse> getUser() {
+        List<User> userList = userRepository.findAll();
+        return userList.stream()
+                .filter(user -> !user.getRole().equals(Role.ADMIN))
+                .map(this::mapUserToUserResponse)
+                .collect(Collectors.toList());
     }
    @Override
     public User findByUserEmail(String userEmail){
@@ -65,6 +74,11 @@ public class UserServiceImp implements UserService {
         BeanUtils.copyProperties(findByEmail,user);
         return user;
    }
+    public User getUserById(Long userId) {
+        System.out.println(userRepository.findById(userId));
+        return userRepository.findById(userId)
+                .orElseThrow();
+    }
 
     public boolean userRegistration(UserDto dto) {
         Optional<User> isUserExists = userRepository.findByUserEmail(dto.getUserEmail());
@@ -93,6 +107,15 @@ public class UserServiceImp implements UserService {
         return AuthResponse.builder()
                 .token(token)
                 .email(user.getUserEmail())
+                .build();
+    }
+    private com.iamneo.response.UserResponse mapUserToUserResponse(User user) {
+        return com.iamneo.response.UserResponse.builder()
+                .userId(user.getUserId())
+                .userEmail(user.getUserEmail())
+                .userPassword(user.getUserPassword())
+                .userName(user.getUsername())
+                .role(user.getRole())
                 .build();
     }
 }

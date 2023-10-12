@@ -1,16 +1,18 @@
 package com.iamneo.controller;
 
-import com.iamneo.dto.LoginDto;
 import com.iamneo.dto.UserDto;
-import com.iamneo.dto.UserResponse;
+import com.iamneo.jwt.JwtUtil;
+import com.iamneo.model.User;
 import com.iamneo.request.UserRequest;
-import com.iamneo.response.AppResponse;
 import com.iamneo.response.AuthResponse;
+import com.iamneo.response.UserResponse;
 import com.iamneo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -19,6 +21,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
+//   @Autowired
 
     @PostMapping("/add")
     public ResponseEntity<String> saveStudent(@RequestBody UserDto dto) {
@@ -28,22 +34,27 @@ public class UserController {
                 : ResponseEntity.badRequest().body("Something went wrong!");
     }
 
+
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<UserResponse> deleteStudent(Long user_id) {
-        return new ResponseEntity<UserResponse>(
-                new UserResponse(false, "Student Successfully Deleted", userService.deleteStudent(user_id)),
-                HttpStatus.OK);
+    public boolean deleteByUserId(@PathVariable Long userId){
+        System.out.println(userId);
+        return userService.deleteUser(userId);
     }
 
-    @GetMapping("/get/{userId}")
-    public ResponseEntity<UserResponse> getStudent(Long user_id) {
-        return new ResponseEntity<UserResponse>(
-                new UserResponse(false, "Student Fetched Successfully", userService.getStudent(user_id)),
-                HttpStatus.OK);
+    @GetMapping("/find/{userId}")
+    public Optional<User> getUserByID(@PathVariable Long userId){
+        System.out.println(userId);
+        return Optional.ofNullable(userService.getUserById(userId));
     }
+    @GetMapping("/findAll")
+    public List<UserResponse> getUserAll(){
+        return userService.getUser();
+    }
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> authenticate(@RequestBody UserRequest request) {
         System.out.println(userService.authenticateLogin(request));
+
         return ResponseEntity.ok(userService.authenticateLogin(request));
     }
 }
