@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface FlightService {
     List<FlightDto> getAllFlights();
-
     FlightList getById(Long id);
+    public boolean deleteFlight(Long id);
 }

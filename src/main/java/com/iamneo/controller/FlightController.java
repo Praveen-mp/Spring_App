@@ -29,4 +29,11 @@ public class FlightController {
         System.out.println(fid);
         return Optional.ofNullable(flightService.getById(fid));
     }
+
+    @DeleteMapping("/deleteFlight/{fid}")
+    public boolean deleteByUserId(@PathVariable Long fid){
+        System.out.println(fid);
+        return flightService.deleteFlight(fid);
+    }
+
 }

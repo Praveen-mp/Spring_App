@@ -2,6 +2,7 @@ package com.iamneo.controller;
 
 
 import com.iamneo.dto.FlightFareDto;
+import com.iamneo.dto.UpdateUserDto;
 import com.iamneo.dto.UserDto;
 import com.iamneo.model.FlightFare;
 import com.iamneo.model.User;
@@ -36,4 +37,16 @@ public class FlightFareController {
         System.out.println(userEmail);
         return Optional.ofNullable(flightFareService.findByUserEmail(userEmail));
     }
+    @PutMapping("/update/{userEmail}")
+    public ResponseEntity<String> updateUser(@PathVariable String userEmail, @RequestBody UpdateUserDto updateUserDto) {
+        // Implement the logic to update the user based on the userEmail using updateUserDto
+        // You can call the appropriate service method for updating the user
+
+        // For example:
+        boolean isUpdated = flightFareService.updateUser(userEmail, updateUserDto);
+
+        return isUpdated ? ResponseEntity.ok("User updated successfully")
+                : ResponseEntity.badRequest().body("Failed to update user");
+    }
+
 }

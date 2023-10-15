@@ -1,6 +1,7 @@
 package com.iamneo.service.serviceImp;
 
 import com.iamneo.dto.FlightFareDto;
+import com.iamneo.dto.UpdateUserDto;
 import com.iamneo.dto.UserDto;
 import com.iamneo.model.FlightFare;
 import com.iamneo.model.User;
@@ -56,6 +57,38 @@ public class FlightFareServiceImp implements FlightFareService {
     @Override
     public FlightFare findByUserEmail(String userEmail) {
         return flightFareRepository.findByUserEmail(userEmail).orElseThrow();
+    }
+
+    @Override
+    public boolean updateUser(String email, UpdateUserDto updateUserDto) {
+        Optional<FlightFare> optionalUser = flightFareRepository.findByUserEmail(email);
+
+        if (optionalUser.isPresent()) {
+            FlightFare userToUpdate = optionalUser.get();
+
+            // Check if the UpdateUserDto contains new values for the fields.
+            String newName = updateUserDto.getUserName();
+            String newAge = updateUserDto.getAge();
+
+            // Update the user's information if new values are provided.
+            if (newName != null) {
+                userToUpdate.setUserName(newName);
+            }
+//            if (newAge != null && !newAge.isEmpty()) {
+                userToUpdate.setUserAge(newAge);
+//            }
+
+            // You can add more fields to update as needed.
+
+            // Save the updated user information in the repository.
+            flightFareRepository.save(userToUpdate);
+
+            // Return true to indicate a successful update.
+            return true;
+        }
+
+        // Return false to indicate that the user was not found or the update failed.
+        return false;
     }
 
 }

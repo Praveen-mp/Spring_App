@@ -25,4 +25,6 @@ public interface UserService {
     public AuthResponse authenticateLogin(UserRequest request);
 
     boolean userRegistration(UserDto userDto);
+
+
 }

@@ -35,6 +35,12 @@ public class FlightServiceImp implements FlightService {
                 .orElseThrow();
     }
 
+    @Override
+    public boolean deleteFlight(Long id) {
+        flightRepository.deleteById(id);
+        return false;
+    }
+
 
     private FlightDto convertToDTO(FlightList flight) {
          return FlightDto.builder()
